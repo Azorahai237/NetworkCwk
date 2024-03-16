@@ -6,8 +6,7 @@ public class Client {
     private Socket socket = null;
     private PrintWriter socketOutput = null;
     private BufferedReader socketInput = null;
-	private static String command = null;
-	private static String filename = null;
+	
 
     public void placeholder(String command, String filename) {
 
@@ -39,9 +38,23 @@ public class Client {
 			// System.out.println("blah");
 			// System.out.println(command);
 
-
+			
 			socketOutput.println(command);
+			socketOutput.flush();
+
+			// System.out.println("Testing123");
+			try{
+				String line;
+				while ((line = socketInput.readLine()) != null) {
+					System.out.println("Received from server: " + line);
+	
+				} 
+			}catch (IOException e) {
+				System.err.println("Error reading response from the server: " + e.getMessage());
+				
+			}
 		}
+		
 		else if (command.equals("put")){
 			try{
 				socketOutput.println(command);
@@ -64,18 +77,10 @@ public class Client {
 				fileInputStream.close();
 			
 				// Flush the output stream to ensure that all data is sent
-				socketOutput.flush();
+				
 
 				//reading response from server
-				String line;
-				while ((line = socketInput.readLine()) != null) {
-					System.out.println("Received from server: " + line);
-					if (line.equals("END_OF_LIST")) {
-						break;
-					}
-					// Process each filename received from the server
-					System.out.println("Filename: " + line);
-				}
+				
 
 
 
@@ -134,7 +139,10 @@ public class Client {
 	}
 	
 	public static void main(String[] args) {
+
 		// command line arguments parsing
+		String command = null;
+ 		String filename = null;
 		if (args.length <= 0){
 			System.err.println("Usage: java Client list|put <file.txt>");
 		}
