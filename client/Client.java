@@ -13,7 +13,7 @@ public class Client {
         try {
 
             // Try and create the socket. This assumes the server is running on the same machine, "locaslhost".
-            socket = new Socket( "localhost", 8080 );
+            socket = new Socket( "localhost", 9237 );
 
             // Chain a writing stream
             socketOutput = new PrintWriter(socket.getOutputStream(), true);
@@ -32,7 +32,6 @@ public class Client {
         }
 
             
-        String fromServer;
 
 		if (command.equals("list")){
 			// System.out.println("blah");
@@ -57,40 +56,53 @@ public class Client {
 		
 		else if (command.equals("put")){
 			try{
-				socketOutput.println(command);
-				socketOutput.println(filename);
-
-	
+				
+				
 				// Open the file
 				File file = new File(filename);
-				FileInputStream fileInputStream = new FileInputStream(file);
+				BufferedReader fileReader = new BufferedReader(new FileReader(file));
 			
 				// Create a buffer to read the file data in chunks
-				byte[] buffer = new byte[65536]; // Adjust buffer size as needed
-			
+				char[] buffer = new char[100000]; // Adjust buffer size as needed
+				
+				socketOutput.println(command);
+				socketOutput.println(filename);
 				// Read and send the file data in chunks
-				int bytesRead;
-				while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-					socket.getOutputStream().write(buffer, 0, bytesRead);
+				int charsRead;
+				while ((charsRead = fileReader.read(buffer)) != -1) {
+					socketOutput.write(buffer, 0, charsRead);
 				}
-				// Close the input stream
-				fileInputStream.close();
-			
-				// Flush the output stream to ensure that all data is sent
+				fileReader.close();
+				socketOutput.println('\0');
 				
-
-				//reading response from server
-				
-
-
-
-			}catch (FileNotFoundException e) {
+			} catch (FileNotFoundException e) {
 				System.err.println("File not found: " + filename);
 				System.exit(1);
+				// Handle the case where the specified file is not found
 			} catch (IOException e) {
 				System.err.println("Error reading file: " + filename);
 				System.exit(1);
+				// Handle other I/O exceptions, such as problems reading from the file
 			}
+				// Close the input stream
+			
+				// Flush the output stream to ensure that all data is sent
+				socketOutput.flush();
+
+				//reading response from server
+				try{
+					String line;
+					while ((line = socketInput.readLine()) != null) {
+						System.out.println("Received from server: " + line);
+		
+					} 
+				}catch (IOException e) {
+					System.err.println("Error reading response from the server: " + e.getMessage());
+					
+				}
+
+
+
 		
 		}
 		else{

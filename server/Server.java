@@ -4,16 +4,16 @@ import java.util.concurrent.*;
 
 public class Server {
 
-  // As a demonstration, put everything into main(); obviously you would probably want
-  // to use instance variables and break this up into separate methods for a real application.
+  
   public static void main(String[] args) throws IOException {
 
     ServerSocket server = null;
-    ExecutorService service = Executors.newCachedThreadPool();
+	// manage fixed thread pool
+    ExecutorService service = Executors.newFixedThreadPool(20);
 
     // Try to open up the listening port
     try {
-		server = new ServerSocket(8080);
+		server = new ServerSocket(9237);
 		System.out.println("Waiting for client connection...");
 		
 		while( true )
