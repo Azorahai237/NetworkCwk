@@ -17,7 +17,12 @@ public class Server {
 		System.out.println("Waiting for client connection...");
 		
 		while( true )
-		{
+		{	
+			// accept client connection and create a new thread to handle it. 
+			// The thread is added to the thread pool. 
+			// The thread pool is a fixed size, so if the thread pool is full, the client connection is rejected. 
+			// The client connection is rejected if the server is shut down. 
+
 			Socket client = server.accept();
 			System.out.println("Client connected.");
 		  	service.submit( new ClientHandler(client) );
