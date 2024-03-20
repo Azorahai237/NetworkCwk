@@ -29,6 +29,7 @@ public class Client {
 			System.exit(1);
 		}
 
+		// handling list command
 		if (command.equals("list")) {
 			// Check if filename is null. If not, the list command is invalid and the client
 			// should
@@ -54,6 +55,7 @@ public class Client {
 			}
 		}
 
+		// handling put command
 		else if (command.equals("put")) {
 			try {
 
@@ -66,7 +68,7 @@ public class Client {
 				// send command and filename to server
 				socketOutput.println(command);
 				socketOutput.println(filename);
-				// Read and send the file data in chunks
+				// Read and send the file data in characaters
 				int charsRead;
 				while ((charsRead = fileReader.read(buffer)) != -1) {
 					socketOutput.write(buffer, 0, charsRead);
@@ -121,12 +123,12 @@ public class Client {
 			System.err.println("Usage: java Client list|put <file.txt>");
 			System.exit(0);
 		}
+		// saving cmd line args
 		command = args[0];
-
 		if (args.length == 2) {
 			filename = args[1];
 		}
-
+		// open client
 		Client client = new Client();
 		client.client(command, filename);
 	}
