@@ -30,7 +30,7 @@ public class Server {
 
       
     } catch (IOException e) {
-      System.err.println("Could not listen on port: 8080.");
+      System.err.println("Could not listen on port.");
       System.exit(-1);
     } finally {
 		// Shutdown the executor service when the server terminates
